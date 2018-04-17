@@ -1,1 +1,1 @@
-# BoussinesqSolverDNSfftw2
+# BoussinesqDNSfftw3
