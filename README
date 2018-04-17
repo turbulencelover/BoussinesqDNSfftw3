@@ -1,0 +1,23 @@
+Hi Hossein and Olivier:
+
+Here is my latest version of the code with FFTW3. The core is the same as before so you should recognize most of it. Here are a few things that may be different - I can't remember exactly what version you guys have. 
+
+1. Modules: I cleaned up the code a bit by putting a lot of the parameters in a few module files. This makes the code nicer because the parameters don't have to be passed explicitly to all the subroutines. There are 3 module files:
+
+param.F90: most of the parameters are here, except for IC and forcing parameters, which are still defined in the main code
+param_fftw.F90: fftw stuff
+param_netcdf.F90: netcdf stuff
+
+2. FFTW: I had a Masters student a few years ago who updated to FFTW3. It was a pain because all of the arrays need to be allocated in a particular way. Also, real and complex versions of the same array are linked for in-place transforms by pointers instead of EQUIVALENCE. If you need to declare any new arrays that will be FFT'ed you can just follow what's there. Also, plans are different: you need a separate plan for every array that you will transform.
+
+The good news is that FFTW3 takes care of all the MPI stuff itself so that part of the code is much shorter now.
+
+3. NetCDF: I was running into trouble with big jobs before because of some memory limitations in NetCDF, so I changed the i/o to dump separate arrays in separate files, for both restart files and real space output. 
+
+4. I've used the code on Sharcnet (our Calcul Quebec) on up to 256 processors and it seems to scale decently, especially considering that it's an ALL-to-ALL. 
+
+5. This particular version of the code is set up to do DNS of forced stratified turbulence with forcing of vortical modes in a shell |k|=4. Also, the dealiasing truncation is set to 8/9 instead of 2/3 - I was experimenting with allowing a little aliasing. You might want to put it back to 2/3 but I found that the results were essentially identical.
+
+Let me know if you have any questions or problems. 
+
+Mike
